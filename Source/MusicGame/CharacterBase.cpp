@@ -21,7 +21,7 @@ void ACharacterBase::BeginPlay()
 	FString songPath = Path + "/Content/Songs/WeWillRockYou.m4a";
 	FString name = "WeWillRockYou";
 	//MusicAnalyzer::Analyze(songPath,name);
-	bpm = MusicAnalyzer::GetBPM(name);
+	bpm = MusicAnalyzer::GetBpm(name);
 	const FString bpmString = FString::SanitizeFloat(bpm);
 	GEngine->AddOnScreenDebugMessage(
 		-1,                 // Key: A unique identifier for the message. -1 means no key, so it will be a new message each time.
