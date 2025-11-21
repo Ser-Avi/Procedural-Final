@@ -19,6 +19,8 @@ struct FMusicData
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	TArray<float> beats;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
+	TArray<float> beats_diff;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	float tuning_frequency;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	USoundWave* sound;

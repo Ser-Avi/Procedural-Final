@@ -122,12 +122,15 @@ FMusicData MusicAnalyzer::GetMusicData(const FString& name)
         const TArray<TSharedPtr<FJsonValue>>* BeatsArray;
         if ((*RhythmObject)->TryGetArrayField(TEXT("beats_position"), BeatsArray))
         {
+            float prev = 0.0f;
             for (const TSharedPtr<FJsonValue>& BeatValue : *BeatsArray)
             {
                 if (BeatValue->Type == EJson::Number)
                 {
                     float BeatPosition = static_cast<float>(BeatValue->AsNumber());
                     data.beats.Add(BeatPosition);
+                    data.beats_diff.Add(BeatPosition - prev);
+                    prev = BeatPosition;
                 }
             }
 
