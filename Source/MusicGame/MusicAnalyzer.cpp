@@ -51,11 +51,11 @@ void MusicAnalyzer::Analyze(const FString& filepath, const FString& name)
 }
 
 
-MusicData MusicAnalyzer::GetMusicData(const FString& name)
+FMusicData MusicAnalyzer::GetMusicData(const FString& name)
 {
     FString Path = FPaths::GetPath(FPaths::GetProjectFilePath());
     FString filePath = Path + "/SongData/" + name + ".json";
-    MusicData data = MusicData();
+    FMusicData data {};
 
     // Read file content
     FString JsonString;

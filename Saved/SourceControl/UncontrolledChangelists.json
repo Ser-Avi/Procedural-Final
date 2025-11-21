@@ -5,6 +5,10 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"D:/Programming/Procedural/Procedural-Final/Content/LevelActors/BP_MusicPlayer.uasset",
+				"D:/Programming/Procedural/Procedural-Final/Content/Songs/WeWillRockYou.uasset",
+				"D:/Programming/Procedural/Procedural-Final/Content/Songs/WeWillRockYouWav.uasset",
+				"D:/Programming/Procedural/Procedural-Final/Content/LevelActors/BP_TerrainPiece.uasset",
 				"C:/Users/admin/Desktop/School/5660/ProceduralFinal/Content/LevelActors/BP_TerrainPiece.uasset",
 				"C:/Users/admin/Desktop/School/5660/ProceduralFinal/Content/__ExternalActors__/ThirdPerson/Lvl_ThirdPerson/C/HY/Q7CPP7VHOXBAMAJI90W626.uasset",
 				"C:/Users/admin/Desktop/School/5660/ProceduralFinal/Content/LevelActors/BP_TerrainManager.uasset",

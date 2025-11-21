@@ -17,8 +17,7 @@ void ACharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	FString Path = FPaths::GetPath(FPaths::GetProjectFilePath());
-
-	FString songPath = Path + "/Content/Songs/WeWillRockYou.m4a";
+	FString songPath = Path + "/Content/Songs/WeWillRockYou.wav";
 	FString name = "WeWillRockYou";
 	//MusicAnalyzer::Analyze(songPath,name);
 	bpm = MusicAnalyzer::GetBpm(name);

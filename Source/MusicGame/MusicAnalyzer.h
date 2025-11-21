@@ -3,14 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AnalyzerFunctionLibrary.h"
 
-struct MusicData
-{
-	float length;
-	float bpm;
-	TArray<float> beats;
-	float tuning_frequency;
-};
+struct FMusicData;
 
 class MUSICGAME_API MusicAnalyzer
 {
@@ -19,5 +14,5 @@ public:
 	~MusicAnalyzer();
 	static void Analyze(const FString& filepath, const FString& name);
 	static float GetBpm(const FString& name);
-	static MusicData GetMusicData(const FString& name);
+	static FMusicData GetMusicData(const FString& name);
 };
