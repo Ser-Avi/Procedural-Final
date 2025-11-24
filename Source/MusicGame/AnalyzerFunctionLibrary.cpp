@@ -65,12 +65,12 @@ float perlinNoise3D(FVector p) {
 bool UAnalyzerFunctionLibrary::IsHole(FVector position)
 {
     float perlin = perlinNoise3D(position);
-    GEngine->AddOnScreenDebugMessage(
-        -1,                 // Key: A unique identifier for the message. -1 means no key, so it will be a new message each time.
-        5.0f,               // TimeToDisplay: How long the message will remain on screen (in seconds).
-        FColor::Red,        // DisplayColor: The color of the text.
-        FString::SanitizeFloat(perlin) // DebugMessage: The actual text to display. Use TEXT() macro for string literals.
-    );
+    //GEngine->AddOnScreenDebugMessage(
+    //    -1,                 // Key: A unique identifier for the message. -1 means no key, so it will be a new message each time.
+    //    5.0f,               // TimeToDisplay: How long the message will remain on screen (in seconds).
+    //    FColor::Red,        // DisplayColor: The color of the text.
+    //    FString::SanitizeFloat(perlin) // DebugMessage: The actual text to display. Use TEXT() macro for string literals.
+    //);
     return perlin < 0.05f;
 }
 
