@@ -2,10 +2,14 @@ CIS 5660 Fall 2025 Final Project - Avi Serebrenik and Daniel Gerhardt
 
 ### Progress Updates
 ##### Milestone 2
-*insert image here*
+<img width="1192" height="1058" alt="image" src="https://github.com/user-attachments/assets/5eb1119d-39a2-456f-8a4c-8790fca681e2" />
+<img width="888" height="641" alt="image" src="https://github.com/user-attachments/assets/84ebefdf-8aac-4ff2-8cbe-899447f4f66b" />
+
 **Level Generation:**
+The tube the player runs in can now have an arbitrary number of sides and radius, allowing for these parameters to change with music qualities. This allows for more complex and emergent gameplay and was an important step in achieving the goal terrain for the final game. 
 
 **Gameplay and UI:**
+There is a main menu UI for starting the game and loading in any sound file for analysis and level generation. The player now snaps to the side they are above in the tunnel, with proper gravity and camera rotation adjustment.
 
 **Music Analysis:**
 We have improved the way music analysis works (using a newer executable and outputting in a proper JSON using a config file), and we have grabbed more information from played songs. Namely, instead of just BPM, we now extract the exact time signatures of beats, as well as the differences between them for different beat based calculations. Furthermore, we also grab tonal_frequency (how notes are tuned in the song), danceability, length, and loudness. This data is now also fully available in Unreal Blueprints.
