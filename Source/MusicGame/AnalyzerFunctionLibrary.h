@@ -13,6 +13,8 @@ struct FMusicData
 {
 	GENERATED_BODY()
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
+	float loudness;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	float length;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	float bpm;
@@ -23,7 +25,24 @@ struct FMusicData
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	float tuning_frequency;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
+	float danceability;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MusicData")
 	USoundWave* sound;
+};
+
+USTRUCT(BlueprintType)
+struct FNoiseResultData
+{
+	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NoiseData")
+	bool isHole;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NoiseData")
+	float sizeX;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NoiseData")
+	float sizeY;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "NoiseData")
+	FVector transformOffset;
+
 };
 
 /**
@@ -34,7 +53,7 @@ class MUSICGAME_API UAnalyzerFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	UFUNCTION(BlueprintCallable)
-	static bool IsHole(FVector position);
+	static FNoiseResultData CalculateNoiseResults(FVector position, FMusicData music);
 	UFUNCTION(BlueprintCallable, Category = "MusicData")
 	static FMusicData GetData(const FString& name);
 };

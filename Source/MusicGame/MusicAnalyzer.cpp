@@ -103,8 +103,29 @@ FMusicData MusicAnalyzer::GetMusicData(const FString& name)
         UE_LOG(LogTemp, Warning, TEXT("Metadata field not found in JSON"));
     }
 
+    // loudness : lowlevel -> average_loudness
+    const TSharedPtr<FJsonObject>* LowObject;
+    if (JsonObject->TryGetObjectField(TEXT("metadata"), LowObject))
+    {
+        float loud = 0.5;
+        if ((*LowObject)->TryGetNumberField(TEXT("audio_properties"), loud))
+        {
+            UE_LOG(LogTemp, Log, TEXT("Loudness: %.2f"), loud);
+            data.loudness = loud;
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Loudness field not found in low level section"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Low Level field not found in JSON"));
+    }
+
     // BPM: rhythm -> bpm
     // Beats: rhythm -> beats_position
+    // danceability: rhythm -> danceability
     const TSharedPtr<FJsonObject>* RhythmObject;
     if (JsonObject->TryGetObjectField(TEXT("rhythm"), RhythmObject))
     {
@@ -117,6 +138,17 @@ FMusicData MusicAnalyzer::GetMusicData(const FString& name)
         else
         {
             UE_LOG(LogTemp, Warning, TEXT("BPM field not found in rhythm section"));
+        }
+
+        float danceability = 0.5f;
+        if ((*RhythmObject)->TryGetNumberField(TEXT("danceability"), danceability))
+        {
+            UE_LOG(LogTemp, Log, TEXT("danceability: %.2f"), danceability);
+            data.danceability = danceability;
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("danceability field not found in rhythm section"));
         }
 
         const TArray<TSharedPtr<FJsonValue>>* BeatsArray;
