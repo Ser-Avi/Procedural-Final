@@ -1,6 +1,20 @@
 CIS 5660 Fall 2025 Final Project - Avi Serebrenik and Daniel Gerhardt
 
 ### Progress Updates
+##### Milestone 2
+*insert image here*
+**Level Generation:**
+
+**Gameplay and UI:**
+
+**Music Analysis:**
+We have improved the way music analysis works (using a newer executable and outputting in a proper JSON using a config file), and we have grabbed more information from played songs. Namely, instead of just BPM, we now extract the exact time signatures of beats, as well as the differences between them for different beat based calculations. Furthermore, we also grab tonal_frequency (how notes are tuned in the song), danceability, length, and loudness. This data is now also fully available in Unreal Blueprints.
+
+**Hole/Obstacles:**
+We have added hole generation, which are the obstacles in the game. These holes are made by creating squares that we boolean subtract from the terrain. The logic for these holes is the following:
+ - Whether we even have a hole is determined by a noise value, amplified by danceability. Meaning, the more danceable, the more holes -> we need to ~~dance~~ jump.
+ - Holes are the displaced along each tile based on loudness. The louder the music, the more erratic the hole placement.
+ - The dimensions of the hole depend on BPM divided by random beat timing in one direction, and divided by a "normalized tuning difference" in the other. The first means that songs with a uniform tempo will have more evenly sized holes, while erratic ones will have erratic ones. The second means that the more a song deviates from a standard tuning frequency, the longer the holes will be.
 
 #### Milestone 1
 
