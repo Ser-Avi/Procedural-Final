@@ -53,6 +53,8 @@ void MusicAnalyzer::Analyze(const FString& filepath, const FString& name)
 
 FMusicData MusicAnalyzer::GetMusicData(const FString& name)
 {
+    UE_LOG(LogTemp, Log, TEXT("Getting Music Data for %s"), *name);
+
     FString Path = FPaths::GetPath(FPaths::GetProjectFilePath());
     FString filePath = Path + "/SongData/" + name + ".json";
     FMusicData data {};
@@ -105,10 +107,10 @@ FMusicData MusicAnalyzer::GetMusicData(const FString& name)
 
     // loudness : lowlevel -> average_loudness
     const TSharedPtr<FJsonObject>* LowObject;
-    if (JsonObject->TryGetObjectField(TEXT("metadata"), LowObject))
+    if (JsonObject->TryGetObjectField(TEXT("lowlevel"), LowObject))
     {
         float loud = 0.5;
-        if ((*LowObject)->TryGetNumberField(TEXT("audio_properties"), loud))
+        if ((*LowObject)->TryGetNumberField(TEXT("average_loudness"), loud))
         {
             UE_LOG(LogTemp, Log, TEXT("Loudness: %.2f"), loud);
             data.loudness = loud;
@@ -180,7 +182,7 @@ FMusicData MusicAnalyzer::GetMusicData(const FString& name)
 
     // tuning frequency: tonal -> tuning_frequency
     const TSharedPtr<FJsonObject>* TonalObject;
-    if (JsonObject->TryGetObjectField(TEXT("metadata"), TonalObject))
+    if (JsonObject->TryGetObjectField(TEXT("tonal"), TonalObject))
     {
         float freq = 0.0f;
         if ((*TonalObject)->TryGetNumberField(TEXT("tuning_frequency"), freq))

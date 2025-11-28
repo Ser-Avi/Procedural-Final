@@ -36,3 +36,30 @@ FString UFileFunctionLibrary::AddSongToGame(FString songName, FString sourcePath
 	return FString("Success: Song added to the game.");
 
 }
+
+TArray<FString> UFileFunctionLibrary::GetSongNames()
+{
+	TArray<FString> names{};
+	FString path = FPaths::Combine(FPaths::GetPath(FPaths::GetProjectFilePath()), TEXT("SongData"));
+
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	if (!PlatformFile.DirectoryExists(*path))
+	{
+		UE_LOG(LogTemp, Error, TEXT("ERROR: Directory not found: %s"), *path);
+		return names;
+	}
+
+	TArray<FString> FoundFiles;
+
+	// Find all files in the directory
+	PlatformFile.FindFiles(FoundFiles, *FPaths::ConvertRelativePathToFull(path), TEXT(".json"));
+
+	for (const FString& FilePath : FoundFiles)
+	{
+		FString name = FPaths::GetBaseFilename(FilePath);
+		names.Add(name);
+	}
+
+	return names;
+}

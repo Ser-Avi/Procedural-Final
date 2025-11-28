@@ -17,5 +17,7 @@ class MUSICGAME_API UFileFunctionLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable, Category = "FileFunctions")
 	static FString AddSongToGame(FString songName, FString sourcePath);
+	UFUNCTION(BlueprintCallable, Category = "FileFunctions")
+	static TArray<FString> GetSongNames();
 	
 };
