@@ -10,7 +10,7 @@ public class MusicGame : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Json", "JsonUtilities" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {});
+		PrivateDependencyModuleNames.AddRange(new string[] { "AssetTools", "UnrealEd", "AudioEditor" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
