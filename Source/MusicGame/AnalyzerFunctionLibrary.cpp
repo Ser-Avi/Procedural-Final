@@ -94,7 +94,7 @@ float WorleyNoise3D(FVector p, int tiles)
     return minDist;
 }
 
-FNoiseResultData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position, FMusicData music)
+FNoiseResultData UAnalyzerFunctionLibrary::CalculateHole(FVector position, FMusicData music)
 {
     FNoiseResultData data = {};
     float perlin = perlinNoise3D(position * 0.01);
@@ -116,20 +116,103 @@ FNoiseResultData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector positio
     }
     // Offset is more erratic the louder we are -> the more Worley cells we want
     // for this, we map [0, 1] to [5, 40]
-    int loud_tiles = music.loudness * 35 + 5;
+    int loudTiles = music.loudness * 35 + 5;
     // for the transform offset, we use this worley noise loudness
     // louder music -> more erratic hole placement
     FVector offsetDir = random3(position);
-    float worley = WorleyNoise3D(position * 0.1, loud_tiles);
+    float worley = WorleyNoise3D(position * 0.1, loudTiles);
     data.transformOffset = offsetDir * worley * 50.f;
     // length of a hole depends on bpm divided by a random beat timing.
     // this makes it predictable in constant tempo songs, but more erratic in others
     data.sizeX = music.bpm / music.beats_diff[int(perlin) % music.beats_diff.Num()];
     // usually tuning frequency is either 435 and 440, so this gets the diff from the mean of that
-    float normalized_tuning_diff = abs(music.tuning_frequency - 437.5f);
+    float normalizedTuningDiff = abs(music.tuning_frequency - 437.5f);
     // width of a hole depends on bpm dividid by a noise scaled tuning diff
-    data.sizeY = music.bpm / (normalized_tuning_diff * perlin) * 3.f;
+    data.sizeY = music.bpm / (normalizedTuningDiff * perlin) * 3.f;
     return data;
+}
+
+FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position, FVector dimension, FMusicData music)
+{
+    FTerrainGenData outData;
+    FNoiseResultData holeData = CalculateHole(position, music);
+    if (!holeData.isHole)
+    {
+        outData.positions[0] = position;
+        outData.dimensions[0] = dimension;
+        for (int i = 1; i < 4; ++i)
+        {
+            outData.positions[i] = FVector::ZeroVector;
+            outData.dimensions[i] = FVector::ZeroVector;
+        }
+        return outData;
+    }
+    //getting OG slab corners
+    FVector slabFrontLeftCorner = position + FVector(dimension.X * 0.5f, dimension.Y * -0.5f, 0.0f);
+    FVector slabFrontRightCorner = position + FVector(dimension.X * 0.5f, dimension.Y * 0.5f, 0.0f);
+    FVector slabBackLeftCorner = position + FVector(dimension.X * -0.5f, dimension.Y * -0.5f, 0.0f);
+    FVector slabBackRightCorner = position + FVector(dimension.X * -0.5f, dimension.Y * 0.5f, 0.0f);
+    // getting hole corners
+    FVector holePos = position + holeData.transformOffset;
+    FVector holeFrontLeftCorner = holePos + FVector(holeData.sizeX * 0.5f, holeData.sizeY * -0.5f, 0.0f);
+    FVector holeFrontRightCorner = holePos + FVector(holeData.sizeX * 0.5f, holeData.sizeY * 0.5f, 0.0f);
+    FVector holeBackLeftCorner = holePos + FVector(holeData.sizeX * -0.5f, holeData.sizeY * -0.5f, 0.0f);
+    FVector holeBackRightCorner = holePos + FVector(holeData.sizeX * -0.5f, holeData.sizeY * 0.5f, 0.0f);
+
+    // Finally getting the slab pieces
+    // TOP SLAB
+    // we set to 0 if hole extends beyond the top
+    if (holeFrontLeftCorner.X > slabFrontLeftCorner.X)
+    {
+        outData.positions[0] = FVector::ZeroVector;
+        outData.dimensions[0] = FVector::ZeroVector;
+    }
+    else
+    {
+        float diff = slabFrontLeftCorner.X - holeFrontLeftCorner.X;
+        outData.positions[0] = FVector(holeFrontLeftCorner.X + (diff) * 0.5f, position.Y, position.Z);
+        outData.dimensions[0] = FVector(diff, dimension.Y, dimension.Z);
+    }
+    // RIGHT SLAB
+    // same logic as before
+    if (holeFrontRightCorner.Y > slabFrontRightCorner.Y)
+    {
+        outData.positions[1] = FVector::ZeroVector;
+        outData.dimensions[1] = FVector::ZeroVector;
+    }
+    else
+    {
+        float diff = slabFrontRightCorner.Y - holeFrontRightCorner.Y;
+        outData.positions[1] = FVector(holePos.X, holeFrontRightCorner.Y + diff * 0.5f, position.Z);
+        outData.dimensions[1] = FVector(holeData.sizeX, diff, dimension.Z);
+    }
+    // BOTTOM SLAB
+    if (holeBackLeftCorner.X < slabBackLeftCorner.X)
+    {
+        outData.positions[2] = FVector::ZeroVector;
+        outData.dimensions[2] = FVector::ZeroVector;
+    }
+    else
+    {
+        float diff = holeBackLeftCorner.X - slabBackLeftCorner.X;
+        outData.positions[2] = FVector(slabBackLeftCorner.X + diff * 0.5, position.Y, position.Z);
+        outData.dimensions[2] = FVector(diff, dimension.Y, dimension.Z);
+    }
+    // LEFT SLAB
+    if (holeFrontLeftCorner.Y < slabFrontLeftCorner.Y)
+    {
+        outData.positions[3] = FVector::ZeroVector;
+        outData.dimensions[3] = FVector::ZeroVector;
+    }
+    else
+    {
+        float diff = holeFrontLeftCorner.Y - slabFrontLeftCorner.Y;
+
+        outData.positions[3] = FVector(holePos.X, slabFrontLeftCorner.Y + diff * 0.5f, position.Z);
+        outData.dimensions[3] = FVector(holeData.sizeX, diff, dimension.Z);
+    }
+
+    return outData;
 }
 
 FMusicData UAnalyzerFunctionLibrary::GetData(const FString& name)

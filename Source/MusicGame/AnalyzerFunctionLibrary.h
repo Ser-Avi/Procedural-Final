@@ -45,6 +45,16 @@ struct FNoiseResultData
 
 };
 
+USTRUCT(BlueprintType)
+struct FTerrainGenData
+{
+	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
+	TArray<FVector> positions;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
+	TArray<FVector> dimensions;
+};
+
 /**
  *
  */
@@ -52,8 +62,10 @@ UCLASS()
 class MUSICGAME_API UAnalyzerFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	UFUNCTION(BlueprintCallable)
-	static FNoiseResultData CalculateNoiseResults(FVector position, FMusicData music);
+	UFUNCTION(BlueprintCallable, Category = "TerrainData")
+	static FTerrainGenData CalculateNoiseResults(FVector position, FVector dimensions,FMusicData music);
+	UFUNCTION(BlueprintCallable, Category = "TerrainData")
+	static FNoiseResultData CalculateHole(FVector position, FMusicData music);
 	UFUNCTION(BlueprintCallable, Category = "MusicData")
 	static FMusicData GetData(const FString& name);
 };
