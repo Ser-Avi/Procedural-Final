@@ -97,28 +97,38 @@ float WorleyNoise3D(FVector p, int tiles)
 FNoiseResultData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position, FMusicData music)
 {
     FNoiseResultData data = {};
-    float perlin = perlinNoise3D(position);
+    float perlin = perlinNoise3D(position * 0.01);
     //GEngine->AddOnScreenDebugMessage(
     //    -1,                 // Key: A unique identifier for the message. -1 means no key, so it will be a new message each time.
     //    5.0f,               // TimeToDisplay: How long the message will remain on screen (in seconds).
     //    FColor::Red,        // DisplayColor: The color of the text.
     //    FString::SanitizeFloat(perlin) // DebugMessage: The actual text to display. Use TEXT() macro for string literals.
     //);
+    // presuming we start at 0, move down x at 200 velocity.
+    float normalizedSongTime = (position[0] / 200.f) / music.length;
     // the more danceable, the more holes -> we need do --dance-- jump.
-    data.isHole = perlin > 0.5 * (1.3 - music.danceability);
+    // also, the later in the song, the more holes, so it is harder
+    data.isHole = perlin > 0.5 * (1.3 - music.danceability) * (1.0 - normalizedSongTime);
+    // return early if we are not a hole
+    if (!data.isHole)
+    {
+        return data;
+    }
     // Offset is more erratic the louder we are -> the more Worley cells we want
     // for this, we map [0, 1] to [5, 40]
     int loud_tiles = music.loudness * 35 + 5;
     // for the transform offset, we use this worley noise loudness
     // louder music -> more erratic hole placement
-    data.transformOffset = FVector(WorleyNoise3D(position, loud_tiles) * 50.0, WorleyNoise3D(random3(position), loud_tiles) * 50.0, 0.0);
+    FVector offsetDir = random3(position);
+    float worley = WorleyNoise3D(position * 0.1, loud_tiles);
+    data.transformOffset = offsetDir * worley * 50.f;
     // length of a hole depends on bpm divided by a random beat timing.
     // this makes it predictable in constant tempo songs, but more erratic in others
     data.sizeX = music.bpm / music.beats_diff[int(perlin) % music.beats_diff.Num()];
     // usually tuning frequency is either 435 and 440, so this gets the diff from the mean of that
     float normalized_tuning_diff = abs(music.tuning_frequency - 437.5f);
     // width of a hole depends on bpm dividid by a noise scaled tuning diff
-    data.sizeY = music.bpm / (normalized_tuning_diff * perlin);
+    data.sizeY = music.bpm / (normalized_tuning_diff * perlin) * 3.f;
     return data;
 }
 
