@@ -157,13 +157,15 @@ FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position
         }
         return outData;
     }
-    //getting OG slab corners
+
+	holeData.sizeX = FMath::Min(holeData.sizeX, dimension.X * 0.9f);
+	holeData.sizeY = FMath::Min(holeData.sizeY, dimension.Y * 0.9f);
+
     FVector slabFrontLeftCorner = position + FVector(dimension.X * 0.5f, dimension.Y * -0.5f, 0.0f);
     FVector slabFrontRightCorner = position + FVector(dimension.X * 0.5f, dimension.Y * 0.5f, 0.0f);
     FVector slabBackLeftCorner = position + FVector(dimension.X * -0.5f, dimension.Y * -0.5f, 0.0f);
     FVector slabBackRightCorner = position + FVector(dimension.X * -0.5f, dimension.Y * 0.5f, 0.0f);
     
-    // getting hole corners
     FVector holePos = position + holeData.transformOffset;
     FVector holeFrontLeftCorner = holePos + FVector(holeData.sizeX * 0.5f, holeData.sizeY * -0.5f, 0.0f);
     FVector holeFrontRightCorner = holePos + FVector(holeData.sizeX * 0.5f, holeData.sizeY * 0.5f, 0.0f);
@@ -187,12 +189,12 @@ FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position
 	//right box
 	outData.positions[outData.boxCount] = FVector(
 		position.X,
-		(slabFrontRightCorner.Y + holeFrontRightCorner.Y) * 0.5f,
+		(slabFrontRightCorner.Y + holeFrontRightCorner.Y) * 0.5f + (slabFrontRightCorner.Y - holeFrontRightCorner.Y),
 		position.Z
 	);
 	outData.dimensions[outData.boxCount] = FVector(
 		dimension.X,
-		slabFrontRightCorner.Y - holeFrontRightCorner.Y,
+		-(slabFrontRightCorner.Y - holeFrontRightCorner.Y),
 		dimension.Z
 	);
 
@@ -215,15 +217,27 @@ FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position
 	//left box
 	outData.positions[outData.boxCount] = FVector(
 		position.X,
-		(slabFrontLeftCorner.Y + holeFrontLeftCorner.Y) * 0.5f,
+		(slabFrontLeftCorner.Y + holeFrontLeftCorner.Y) * 0.5f + (slabFrontLeftCorner.Y - holeFrontLeftCorner.Y),
 		position.Z
 	);
 
 	outData.dimensions[outData.boxCount] = FVector(
 		dimension.X,
-		holeFrontLeftCorner.Y - slabFrontLeftCorner.Y,
+		-(holeFrontLeftCorner.Y - slabFrontLeftCorner.Y),
 		dimension.Z
 	);
+
+    //ensure all dimensions are positive and clamped
+	for (int i = 0; i < outData.boxCount; ++i)
+	{
+		outData.dimensions[i] = FVector(
+			FMath::Abs(outData.dimensions[i].X),
+			FMath::Abs(outData.dimensions[i].Y),
+			FMath::Abs(outData.dimensions[i].Z)
+		);
+		outData.dimensions[i].X = FMath::Clamp(outData.dimensions[i].X, 0.0f, dimension.X);
+		outData.dimensions[i].Y = FMath::Clamp(outData.dimensions[i].Y, 0.0f, dimension.Y);
+	}
 
     return outData;
 }
