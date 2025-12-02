@@ -162,6 +162,7 @@ FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position
     FVector slabFrontRightCorner = position + FVector(dimension.X * 0.5f, dimension.Y * 0.5f, 0.0f);
     FVector slabBackLeftCorner = position + FVector(dimension.X * -0.5f, dimension.Y * -0.5f, 0.0f);
     FVector slabBackRightCorner = position + FVector(dimension.X * -0.5f, dimension.Y * 0.5f, 0.0f);
+    
     // getting hole corners
     FVector holePos = position + holeData.transformOffset;
     FVector holeFrontLeftCorner = holePos + FVector(holeData.sizeX * 0.5f, holeData.sizeY * -0.5f, 0.0f);
@@ -169,58 +170,60 @@ FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position
     FVector holeBackLeftCorner = holePos + FVector(holeData.sizeX * -0.5f, holeData.sizeY * -0.5f, 0.0f);
     FVector holeBackRightCorner = holePos + FVector(holeData.sizeX * -0.5f, holeData.sizeY * 0.5f, 0.0f);
 
-    // Finally getting the slab pieces
-    // TOP SLAB
-    // we set to 0 if hole extends beyond the top
-    if (holeFrontLeftCorner.X > slabFrontLeftCorner.X)
-    {
-        outData.positions[0] = FVector::ZeroVector;
-        outData.dimensions[0] = FVector::ZeroVector;
-    }
-    else
-    {
-        float diff = slabFrontLeftCorner.X - holeFrontLeftCorner.X;
-        outData.positions[0] = FVector(holeFrontLeftCorner.X + (diff) * 0.5f, position.Y, position.Z);
-        outData.dimensions[0] = FVector(diff, dimension.Y, dimension.Z);
-    }
-    // RIGHT SLAB
-    // same logic as before
-    if (holeFrontRightCorner.Y > slabFrontRightCorner.Y)
-    {
-        outData.positions[1] = FVector::ZeroVector;
-        outData.dimensions[1] = FVector::ZeroVector;
-    }
-    else
-    {
-        float diff = slabFrontRightCorner.Y - holeFrontRightCorner.Y;
-        outData.positions[1] = FVector(holePos.X, holeFrontRightCorner.Y + diff * 0.5f, position.Z);
-        outData.dimensions[1] = FVector(holeData.sizeX, diff, dimension.Z);
-    }
-    // BOTTOM SLAB
-    if (holeBackLeftCorner.X < slabBackLeftCorner.X)
-    {
-        outData.positions[2] = FVector::ZeroVector;
-        outData.dimensions[2] = FVector::ZeroVector;
-    }
-    else
-    {
-        float diff = holeBackLeftCorner.X - slabBackLeftCorner.X;
-        outData.positions[2] = FVector(slabBackLeftCorner.X + diff * 0.5, position.Y, position.Z);
-        outData.dimensions[2] = FVector(diff, dimension.Y, dimension.Z);
-    }
-    // LEFT SLAB
-    if (holeFrontLeftCorner.Y < slabFrontLeftCorner.Y)
-    {
-        outData.positions[3] = FVector::ZeroVector;
-        outData.dimensions[3] = FVector::ZeroVector;
-    }
-    else
-    {
-        float diff = holeFrontLeftCorner.Y - slabFrontLeftCorner.Y;
+    //front box
+	outData.positions[outData.boxCount] = FVector(
+		(slabFrontLeftCorner.X + holeFrontLeftCorner.X) * 0.5f,
+		position.Y,
+		position.Z
+	);
+    outData.dimensions[outData.boxCount] = FVector(
+        holeFrontLeftCorner.X - slabFrontLeftCorner.X,
+        dimension.Y,
+        dimension.Z
+    );
 
-        outData.positions[3] = FVector(holePos.X, slabFrontLeftCorner.Y + diff * 0.5f, position.Z);
-        outData.dimensions[3] = FVector(holeData.sizeX, diff, dimension.Z);
-    }
+	outData.boxCount++;
+
+	//right box
+	outData.positions[outData.boxCount] = FVector(
+		position.X,
+		(slabFrontRightCorner.Y + holeFrontRightCorner.Y) * 0.5f,
+		position.Z
+	);
+	outData.dimensions[outData.boxCount] = FVector(
+		dimension.X,
+		slabFrontRightCorner.Y - holeFrontRightCorner.Y,
+		dimension.Z
+	);
+
+	outData.boxCount++;
+
+	//back box
+	outData.positions[outData.boxCount] = FVector(
+		(slabBackLeftCorner.X + holeBackLeftCorner.X) * 0.5f,
+		position.Y,
+		position.Z
+	);
+	outData.dimensions[outData.boxCount] = FVector(
+		holeBackLeftCorner.X - slabBackLeftCorner.X,
+		dimension.Y,
+		dimension.Z
+	);
+
+	outData.boxCount++;
+
+	//left box
+	outData.positions[outData.boxCount] = FVector(
+		position.X,
+		(slabFrontLeftCorner.Y + holeFrontLeftCorner.Y) * 0.5f,
+		position.Z
+	);
+
+	outData.dimensions[outData.boxCount] = FVector(
+		dimension.X,
+		holeFrontLeftCorner.Y - slabFrontLeftCorner.Y,
+		dimension.Z
+	);
 
     return outData;
 }

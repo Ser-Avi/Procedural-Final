@@ -53,6 +53,8 @@ struct FTerrainGenData
 	TArray<FVector> positions{ FVector(), FVector(), FVector(), FVector() };
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
 	TArray<FVector> dimensions{ FVector(), FVector(), FVector(), FVector() };
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
+	int boxCount{ 0 };
 };
 
 /**
