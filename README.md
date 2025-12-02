@@ -1,6 +1,10 @@
 CIS 5660 Fall 2025 Final Project - Avi Serebrenik and Daniel Gerhardt
 
 ### Progress Updates
+#### Final Version
+We transitioned from boolean logic to produce the holes to creating rectangles surrounding holes. Additionally, the hole generation is much more tied to the parameters of the music. The UI was improved to allow song selection and win and loss behavior, and pressing R brings you back to the menu.
+
+
 ##### Milestone 2
 <img width="1192" height="1058" alt="image" src="https://github.com/user-attachments/assets/5eb1119d-39a2-456f-8a4c-8790fca681e2" />
 <img width="888" height="641" alt="image" src="https://github.com/user-attachments/assets/84ebefdf-8aac-4ff2-8cbe-899447f4f66b" />
