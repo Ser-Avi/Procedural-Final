@@ -1,8 +1,36 @@
 CIS 5660 Fall 2025 Final Project - Avi Serebrenik and Daniel Gerhardt
+### Project Overview
+<p align="center">
+  <img width="80%" alt="gif" src="images/gif.gif" />
+  <br>
+  <em>GIF of a level</em>
+</p>
+
+This Unreal game seeks to capture the magic of the classic coolmathgames game, Run 3, by incorporating some procedural elements driven by music that users can load in. The original concept evolved over time, as our milestone updates show below, but the core elements stayed the same -- running and jumping in a long cylinder, avoiding holes.
+
+Users can input their own songs in the main menu that gets analyzed using Essentia, and this analysis is written into a json file. The songs also get loaded into Unreal as a uasset. After this, the song can be selected as a playable level, with the hole and obstacle generation logic responding to the song's details.
+
+The procedural logic is as follows:
+ - Whether we even have a hole is determined by a noise value, amplified by danceability. Meaning, the more danceable, the more holes -> we need to ~~dance~~ jump.
+ - Hole number is increased the longer the song goes on, making the difficulty ramp up as we go.
+ - Holes are the displaced along each tile based on loudness. The louder the music, the more erratic the hole placement.
+ - The dimensions of the hole depend on BPM divided by random beat timing in one direction, and divided by a "normalized tuning difference" in the other. The first means that songs with a uniform tempo will have more evenly sized holes, while erratic ones will have erratic ones. The second means that the more a song deviates from a standard tuning frequency, the longer the holes will be.
+
+ We have loaded up the game with a selection of songs we found fitting, but we do NOT own any copyright, and these are famous songs, but we believe that by having a free game repo like this we fall under free use.
+
 
 ### Progress Updates
 #### Final Version
-We transitioned from boolean logic to produce the holes to creating rectangles surrounding holes. Additionally, the hole generation is much more tied to the parameters of the music. The UI was improved to allow song selection and win and loss behavior, and pressing R brings you back to the menu.
+<p align="center">
+  <img width="80%" alt="gif" src="images/pic1.png" />
+  <br>
+  <em>The new (and final) look</em>
+</p>
+We transitioned from boolean logic to produce the holes to creating rectangles surrounding holes, which created an incredible speedup in the performance, making everything smoothly playable.
+
+Additionally, the hole generation is much more tied to the parameters of the music. This new approach made the levels much easier, but allowed us to add some random obstacles, which we find balances the game much better and adds an extra cool element.
+
+The UI was improved to allow song selection and win and loss behavior, and pressing R brings you back to the menu.
 
 
 ##### Milestone 2
