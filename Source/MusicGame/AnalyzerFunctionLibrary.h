@@ -50,9 +50,9 @@ struct FTerrainGenData
 {
 	GENERATED_BODY()
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
-	TArray<FVector> positions;
+	TArray<FVector> positions{ FVector(), FVector(), FVector(), FVector() };
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TerrainData")
-	TArray<FVector> dimensions;
+	TArray<FVector> dimensions{ FVector(), FVector(), FVector(), FVector() };
 };
 
 /**

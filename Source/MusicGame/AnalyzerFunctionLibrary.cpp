@@ -124,7 +124,7 @@ FNoiseResultData UAnalyzerFunctionLibrary::CalculateHole(FVector position, FMusi
     data.transformOffset = offsetDir * worley * 50.f;
     // length of a hole depends on bpm divided by a random beat timing.
     // this makes it predictable in constant tempo songs, but more erratic in others
-    data.sizeX = music.bpm / music.beats_diff[int(perlin) % music.beats_diff.Num()];
+    data.sizeX = music.bpm / music.beats_diff[abs(int(perlin)) % music.beats_diff.Num()];
     // usually tuning frequency is either 435 and 440, so this gets the diff from the mean of that
     float normalizedTuningDiff = abs(music.tuning_frequency - 437.5f);
     // width of a hole depends on bpm dividid by a noise scaled tuning diff
@@ -135,6 +135,16 @@ FNoiseResultData UAnalyzerFunctionLibrary::CalculateHole(FVector position, FMusi
 FTerrainGenData UAnalyzerFunctionLibrary::CalculateNoiseResults(FVector position, FVector dimension, FMusicData music)
 {
     FTerrainGenData outData;
+
+	outData.dimensions.SetNum(4);
+	outData.positions.SetNum(4);
+    //default initialize dims and pos
+	for (int i = 0; i < 4; ++i)
+	{
+		outData.positions[i] = FVector::ZeroVector;
+		outData.dimensions[i] = FVector::ZeroVector;
+	}
+
     FNoiseResultData holeData = CalculateHole(position, music);
     if (!holeData.isHole)
     {
