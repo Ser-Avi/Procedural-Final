@@ -106,9 +106,14 @@ FNoiseResultData UAnalyzerFunctionLibrary::CalculateHole(FVector position, FMusi
     //);
     // presuming we start at 0, move down x at 200 velocity.
     float normalizedSongTime = (position[0] / 200.f) / music.length;
+    if (position[0] < 1000.f)
+    {
+        data.isHole = false;
+        return data; 
+    }
     // the more danceable, the more holes -> we need do --dance-- jump.
     // also, the later in the song, the more holes, so it is harder
-    data.isHole = perlin > 0.5 * (1.3 - music.danceability) * (1.0 - normalizedSongTime);
+    data.isHole = perlin > 0.5 * (1.5 - music.danceability) * (1.0 - normalizedSongTime * 0.8);
     // return early if we are not a hole
     if (!data.isHole)
     {
